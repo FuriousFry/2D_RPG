@@ -117,7 +117,7 @@
 	    "0,grass"
     	    "0,grass"
 	    "0,grass"
-	    "1,rocks"
+	    "0,grass"
 	    "0,grass,spawn"
     	    "0,grass"
 	    "0,grass"
