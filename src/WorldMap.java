@@ -43,9 +43,9 @@ public class WorldMap extends JPanel{
 		}
 		// Offsets the map so that the player spawns where the spawnpoint is
 		this.x -= playerPos[0]*32;
-		this.x += 320;
+		this.x += 304;
 		this.y -= playerPos[1]*32;
-		this.y += 240;
+		this.y += 230;
 	}
 
 	public Tile getNextTile(String direction) {
@@ -144,24 +144,28 @@ public class WorldMap extends JPanel{
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Down").setPlayerPos(true);
 		playerPos[1]+=1;
+		Sound.playSound("walk");
 	}
 
 	public void movePlayerUp() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Up").setPlayerPos(true);
 		playerPos[1]-=1;
+		Sound.playSound("walk");
 	}
 
 	public void movePlayerRight() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Right").setPlayerPos(true);
 		playerPos[0]+=1;
+		Sound.playSound("walk");
 	}
 
 	public void movePlayerLeft() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Left").setPlayerPos(true);
 		playerPos[0]-=1;
+		Sound.playSound("walk");
 	}
 
 }

@@ -15,6 +15,7 @@ public class Menu extends JPanel{
 	Player player;
 	boolean active = false;
 	ArrayList<String> options = new ArrayList<String>(); 
+	int currentOption = 0;
 	String previousStatus = "";
 
 	public Menu(Game game, Player player) {
@@ -47,6 +48,7 @@ public class Menu extends JPanel{
 			for (int i = 0; i < options.size(); i++){
 				g.drawString(options.get(i), 160, 300+40*i);
 			}
+			g.drawImage(Sprite.getImage("menu_arrow_right"), 100, 280+currentOption*40, this);
 		}
 	}
 
@@ -91,18 +93,26 @@ public class Menu extends JPanel{
 	}
 
 	private void selectOption() {
-		// TODO Auto-generated method stub
-		
+		String selectedOption = options.get(currentOption);
+		if (selectedOption.equals("QUIT")){
+			game.close();
+		} else if (selectedOption.equals("RESUME")) {
+			releasePlayer();
+		}
 	}
 
 	private void moveSelectionDown() {
-		// TODO Auto-generated method stub
-		
+		currentOption++;
+		if (currentOption>=options.size()){
+			currentOption=0;
+		}
 	}
 
 	private void moveSelectionUp() {
-		// TODO Auto-generated method stub
-		
+		currentOption--;
+		if (currentOption<0){
+			currentOption=options.size()-1;
+		}
 	}
 
 }

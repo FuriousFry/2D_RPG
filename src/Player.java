@@ -167,29 +167,29 @@ public class Player extends JPanel{
 		if (!isOccupied()){
 			if (getFacing().equals("Left")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 32, 63, 63,
 						this);
 			} else if (getFacing().equals("Right")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 64, 63, 95,
 						this);
 			} else if (getFacing().equals("Up")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 96, 63, 127,
 						this);
 			} else if (getFacing().equals("Down")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 0, 63, 31,
 						this);
 			}
 		} else if (getStatus().equals("running") && facing.equals("Left")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
-					320, 240, 352, 272,
+					304, 224, 336, 256,
 					offset*32, 32, offset*32+31, 63,
 					this);
 			animationProgress++;
@@ -199,7 +199,7 @@ public class Player extends JPanel{
 		} else if (getStatus().equals("running") && facing.equals("Right")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
-					320, 240, 352, 272,
+					304, 224, 336, 256,
 					offset*32, 64, offset*32+31, 95,
 					this);
 			animationProgress++;
@@ -209,7 +209,7 @@ public class Player extends JPanel{
 		} else if (getStatus().equals("running") && facing.equals("Up")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
-					320, 240, 352, 272,
+					304, 224, 336, 256,
 					offset*32, 96, offset*32+31, 127,
 					this);
 			animationProgress++;
@@ -219,7 +219,7 @@ public class Player extends JPanel{
 		} else if (getStatus().equals("running") && facing.equals("Down")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
-					320, 240, 352, 272,
+					304, 224, 336, 256,
 					offset*32, 0, offset*32+31, 31,
 					this);
 			animationProgress++;
@@ -229,22 +229,22 @@ public class Player extends JPanel{
 		} else if (getStatus().equals("menu")) {
 			if (getFacing().equals("Left")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 32, 63, 63,
 						this);
 			} else if (getFacing().equals("Right")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 64, 63, 95,
 						this);
 			} else if (getFacing().equals("Up")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 96, 63, 127,
 						this);
 			} else if (getFacing().equals("Down")){
 				g.drawImage(Sprite.getImage("player"),
-						320, 240, 352, 272,
+						304, 224, 336, 256,
 						32, 0, 63, 31,
 						this);
 			}			

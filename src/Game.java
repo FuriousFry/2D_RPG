@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,6 +21,7 @@ public class Game extends JPanel {
 	private Player player = new Player(this);
 	private String gameState = "Run";
 	private Menu menu = new Menu(this, player);
+	static JFrame frame = new JFrame("2D_RPG");
 
 	public Game() {
 		addKeyListener(new KeyListener() {
@@ -63,7 +65,6 @@ public class Game extends JPanel {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		JFrame frame = new JFrame("2D_RPG");
 		Game game = new Game();
 		frame.add(game);
 		frame.setSize(640, 480);
@@ -82,5 +83,9 @@ public class Game extends JPanel {
 
 	public WorldMap getMap() {
 		return this.map;
+	}
+
+	public void close() {
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 }
