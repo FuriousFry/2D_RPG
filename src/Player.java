@@ -23,14 +23,14 @@ public class Player extends JPanel{
 	public Player(Game game) {
 		this.game = game;
 
-		System.out.println(map);
+		System.out.println(getMap());
 	}
 
 	public void move() {
-		if (map != null){
-			this.map.move(xSpeed, ySpeed);
+		if (getMap() != null){
+			this.getMap().move(xSpeed, ySpeed);
 		} else {
-			this.map = this.game.getMap();
+			this.setMap(this.game.getMap());
 		}
 	}
 
@@ -72,111 +72,219 @@ public class Player extends JPanel{
 	}	
 	
 	private void moveUp() {
-		if (!isOccupied()){
-			if (map.getNextTile("Up").isPassable()){
-				Timer timer = new Timer();
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (!isOccupied() || isKeyPressed[2] && 
-								map.getNextTile("Up").isPassable()) {
-							ySpeed = 1;
-							map.movePlayerUp();
-							setOccupied(true);
-							setStatus("running");
-						} else {
-							ySpeed = 0;
-							setOccupied(false);
-							setStatus("standing");
-							timer.cancel();
-							timer.purge();
-						}
+		Timer outertimer = new Timer();
+		outertimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (isKeyPressed[2] && !isOccupied()){
+					if (getMap().getNextTile("Up").isPassable()){
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if ((!isOccupied() || isKeyPressed[2]) && 
+										getMap().getNextTile("Up").isPassable()) {
+									ySpeed = 1;
+									getMap().movePlayerUp();
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									ySpeed = 0;
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
+					} else {
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if (!isOccupied() || isKeyPressed[2]) {
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
 					}
-				}, 0, 320);
+					setFacing("Up");
+					outertimer.cancel();
+					outertimer.purge();
+				} else if (!isKeyPressed[2]) {
+					outertimer.cancel();
+					outertimer.purge();
+				}
 			}
-			setFacing("Up");
-		}
+		}, 0, 10);
 	}
 	
 	private void moveDown() {
-		if (!isOccupied()){
-			if (map.getNextTile("Down").isPassable()){
-				Timer timer = new Timer();
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (!isOccupied() || isKeyPressed[3] && 
-								map.getNextTile("Down").isPassable()) {
-							ySpeed = -1;
-							map.movePlayerDown();
-							setOccupied(true);
-							setStatus("running");
-						} else {
-							ySpeed = 0;
-							setOccupied(false);
-							setStatus("standing");
-							timer.cancel();
-							timer.purge();
-						}
+		Timer outertimer = new Timer();
+		outertimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (isKeyPressed[3] && !isOccupied()){
+					if (getMap().getNextTile("Down").isPassable()){
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if ((!isOccupied() || isKeyPressed[3]) && 
+										getMap().getNextTile("Down").isPassable()) {
+									ySpeed = -1;
+									getMap().movePlayerDown();
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									ySpeed = 0;
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
+					} else {
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if (!isOccupied() || isKeyPressed[3]) {
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
 					}
-				}, 0, 320);
+					setFacing("Down");
+					outertimer.cancel();
+					outertimer.purge();
+				} else if (!isKeyPressed[3]) {
+					outertimer.cancel();
+					outertimer.purge();
+				}
 			}
-			setFacing("Down");
-		}
+		}, 0, 10);
 	}
 
 	private void moveRight() {
-		if (!isOccupied()){
-			if (map.getNextTile("Right").isPassable()){
-				Timer timer = new Timer();
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (!isOccupied() || isKeyPressed[1] && 
-								map.getNextTile("Right").isPassable()) {
-							xSpeed = -1;
-							map.movePlayerRight();
-							setOccupied(true);
-							setStatus("running");
-						} else {
-							xSpeed = 0;
-							setOccupied(false);
-							setStatus("standing");
-							timer.cancel();
-							timer.purge();
-						}
+		Timer outertimer = new Timer();
+		outertimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (isKeyPressed[1] && !isOccupied()){
+					if (getMap().getNextTile("Right").isPassable()){
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if ((!isOccupied() || isKeyPressed[1]) && 
+										getMap().getNextTile("Right").isPassable()) {
+									xSpeed = -1;
+									getMap().movePlayerRight();
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									xSpeed = 0;
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
+					} else {
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if (!isOccupied() || isKeyPressed[1]) {
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
 					}
-				}, 0, 320);
+					setFacing("Right");
+					outertimer.cancel();
+					outertimer.purge();
+				} else if (!isKeyPressed[1]) {
+					outertimer.cancel();
+					outertimer.purge();
+				}
 			}
-			setFacing("Right");
-		}
+		}, 0, 10);
 	}
 
 	private void moveLeft() {
-		if (!isOccupied()){
-			if (map.getNextTile("Left").isPassable()){
-				Timer timer = new Timer();
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if ((!isOccupied() || isKeyPressed[0]) && 
-								map.getNextTile("Left").isPassable()) {
-							xSpeed = 1;
-							map.movePlayerLeft();
-							setOccupied(true);
-							setStatus("running");
-						} else {
-							xSpeed = 0;
-							setOccupied(false);
-							setStatus("standing");
-							timer.cancel();
-							timer.purge();
-						}
+		Timer outertimer = new Timer();
+		outertimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (isKeyPressed[0] && !isOccupied()){
+					if (getMap().getNextTile("Left").isPassable()){
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if ((!isOccupied() || isKeyPressed[0]) && 
+										getMap().getNextTile("Left").isPassable()) {
+									xSpeed = 1;
+									getMap().movePlayerLeft();
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									xSpeed = 0;
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
+					} else {
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if (!isOccupied() || isKeyPressed[0]) {
+									setOccupied(true);
+									setStatus("running");
+								} else {
+									setOccupied(false);
+									setStatus("standing");
+									timer.cancel();
+									timer.purge();
+								}
+							}
+						}, 0, 320);
 					}
-				}, 0, 320);
+					setFacing("Left");
+					outertimer.cancel();
+					outertimer.purge();
+				} else if (!isKeyPressed[0]) {
+					outertimer.cancel();
+					outertimer.purge();
+				}
 			}
-			setFacing("Left");
-		}
+		}, 0, 10);
 	}
 
 	public void paint(Graphics2D g) {
@@ -291,6 +399,14 @@ public class Player extends JPanel{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public WorldMap getMap() {
+		return map;
+	}
+
+	public void setMap(WorldMap map) {
+		this.map = map;
 	}
 
 }

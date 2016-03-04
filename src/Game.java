@@ -106,11 +106,12 @@ public class Game extends JPanel {
 	public void loadSave() {
 		ArrayList<String> saveValues = SaveGame.loadGame();
 		this.map = new WorldMap(this, saveValues.get(2));
-		this.map.setPlayerSpawnPoint(new int[]{Integer.valueOf(saveValues.get(0)), Integer.valueOf(saveValues.get(1))});
+		this.map.moveMapToUnderPlayer(new int[]{Integer.valueOf(saveValues.get(0)), Integer.valueOf(saveValues.get(1))}, "");
 		isMapLoaded = true;
 	}
 
 	public void switchMap(String[] destination) {
-		this.map = new WorldMap(this, WorldMap.calculateSpawn(destination), destination[0]);		
+		this.map = new WorldMap(this, WorldMap.calculateSpawn(destination), destination[0], destination[1]);
+		player.setMap(this.map);
 	}
 }

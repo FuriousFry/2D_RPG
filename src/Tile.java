@@ -1,8 +1,6 @@
 public class Tile {
 	private int id;
 	private String name;
-	@SuppressWarnings("unused")
-	private boolean playerPos = false;
 	private String transition = "";
 	private String transitionNote = "";
 
@@ -27,20 +25,13 @@ public class Tile {
 	public boolean isPassable() {
 		switch (this.id) {
 		case 0:
-			System.out.println(this.name + "is passable");
 			return true;
 		case 1:
-			System.out.println(this.name + "is not passable");
 			return false;
 		case 2:
-			System.out.println(this.name + "is passable");
 			return true;
 		}
 		return false;
-	}
-
-	public void setPlayerPos(boolean bool) {
-		playerPos = bool;
 	}
 
 	public String[] getDestination() {

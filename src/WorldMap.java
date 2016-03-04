@@ -30,28 +30,35 @@ public class WorldMap extends JPanel{
 		loadmap(string);
 	}
 
-	public WorldMap(Game game, int[] calculateSpawn, String string) {
+	public WorldMap(Game game, int[] calculateSpawn, String string, String destination) {
 		this.game = game;
 		this.name = string;
 		loadmap(string);
 		this.playerPos = calculateSpawn;
-		setPlayerSpawnPoint(this.playerPos);
+		System.out.println("New map thinks player is at" + playerPos[0] + playerPos[1]);
+		moveMapToUnderPlayer(this.playerPos, destination);
 	}
 
-	public void setPlayerSpawnPoint(int[] playerPositionInput) {
+	public void moveMapToUnderPlayer(int[] playerPositionInput, String destination) {
 		// Calculates the Player's position from the tile that has the attribute "spawn"		
 		// Offsets the map so that the player spawns where the spawnpoint is
-		System.out.println("Map thinks Position is: " + playerPositionInput[0] + ", " + playerPositionInput[1]);
 		this.x -= playerPositionInput[0]*32;
 		this.playerPos[0] = playerPositionInput[0];
 		this.x += 304;
 		this.y -= playerPositionInput[1]*32;
 		this.playerPos[1] = playerPositionInput[1];
 		this.y += 230;
+		switch(destination) {
+		case "north":
+			this.y+=32;
+			break;
+		case "south":
+			this.y-=32;
+			break;
+		}
 	}
 
 	public Tile getNextTile(String direction) {
-		//System.out.print("next in direction " + direction + ": ");
 		switch (direction){
 		case "Down":
 			return getTile(getPlayerPos()[0], getPlayerPos()[1]+1);
@@ -66,7 +73,6 @@ public class WorldMap extends JPanel{
 	}
 
 	private Tile getCurrentTile() {
-		System.out.println(getPlayerPos()[0] + ", " + getPlayerPos()[1]);
 		return getTile(getPlayerPos()[0], getPlayerPos()[1]);
 	}
 
@@ -82,7 +88,8 @@ public class WorldMap extends JPanel{
 	private void loadmap(String mapName) {
 		JSONParser parser = new JSONParser();
 
-		try {        	
+		try {       
+			this.mapItems = new ArrayList<ArrayList<Tile>>();
 			Object obj = parser.parse(new FileReader(
 					"maps/"+mapName+".txt"));
 
@@ -141,32 +148,24 @@ public class WorldMap extends JPanel{
 	}
 
 	public void movePlayerDown() {
-		getCurrentTile().setPlayerPos(false);
-		getNextTile("Down").setPlayerPos(true);
 		getPlayerPos()[1]+=1;
 		Sound.playSound("walk");
 		checkForEffect();
 	}
 
 	public void movePlayerUp() {
-		getCurrentTile().setPlayerPos(false);
-		getNextTile("Up").setPlayerPos(true);
 		getPlayerPos()[1]-=1;
 		Sound.playSound("walk");
 		checkForEffect();
 	}
 
 	public void movePlayerRight() {
-		getCurrentTile().setPlayerPos(false);
-		getNextTile("Right").setPlayerPos(true);
 		getPlayerPos()[0]+=1;
 		Sound.playSound("walk");
 		checkForEffect();
 	}
 
 	public void movePlayerLeft() {
-		getCurrentTile().setPlayerPos(false);
-		getNextTile("Left").setPlayerPos(true);
 		getPlayerPos()[0]-=1;
 		Sound.playSound("walk");
 		checkForEffect();
@@ -196,17 +195,17 @@ public class WorldMap extends JPanel{
 	}
 
 	public static int[] calculateSpawn(String[] destination) {
-		switch (destination[1]){
+		switch (destination[0]){
 		case "testmap":
-			switch (destination[2]){
+			switch (destination[1]){
 			case "north":
-				return new int[]{7,2};
+				return new int[]{7,1};
 			}
 			break;
 		case "testmap2":
-			switch (destination[2]){
+			switch (destination[1]){
 			case "south":
-				return new int[]{4,7};
+				return new int[]{5,9};
 			}
 			break;
 		}
