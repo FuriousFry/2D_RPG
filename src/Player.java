@@ -14,10 +14,10 @@ public class Player extends JPanel{
 	private Game game;
 	private WorldMap map;
 	int animationProgress = 0;
-
-	private boolean[] keyStillPressed = new boolean[4];
-	private String moving = "";
+	
+	private boolean occupied = false;
 	private String facing = "Down";
+	private String status = "Standing";
 
 	public Player(Game game) {
 		this.game = game;
@@ -36,185 +36,157 @@ public class Player extends JPanel{
 	}
 
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT)
-			keyStillPressed[0] = false;
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-			keyStillPressed[1] = false;
-		if (e.getKeyCode() == KeyEvent.VK_UP)
-			keyStillPressed[2] = false;
-		if (e.getKeyCode() == KeyEvent.VK_DOWN)
-			keyStillPressed[3] = false;
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {}
+		if (e.getKeyCode() == KeyEvent.VK_UP) {}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {}
 	}
 
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			keyStillPressed[0] = true;
 			moveLeft();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			keyStillPressed[1] = true;
 			moveRight();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			keyStillPressed[2] = true;
 			moveUp();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			keyStillPressed[3] = true;
-			moveDown();	
+			moveDown();
 		}
-	}
-
-	private void moveDown() {
-		if (map.getNextTile("Down").isPassable()){
-			if (moving.equals("")){
-				moving = "Down";
-				Timer timer = new Timer();
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						if (keyStillPressed[3] == false) {
-							ySpeed = 0;
-							moving = "";
-							timer.cancel();
-							timer.purge();
-						} else {
-							if (map.getNextTile("Down").isPassable()){
-								ySpeed = -1;
-								map.movePlayerDown();
-							} else {
-								ySpeed = 0;
-								moving = "";
-								timer.cancel();
-								timer.purge();
-							}
-						}
-					}
-				}, 0, 320);
-			}
-		}
-		facing = "Down";
-	}
-
+	}	
+	
 	private void moveUp() {
-		if (map.getNextTile("Up").isPassable()){
-			if (moving.equals("")){
-				moving = "Up";
+		if (!isOccupied()){
+			if (map.getNextTile("Up").isPassable()){
 				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (keyStillPressed[2] == false) {
+						if (!isOccupied()) {
+							ySpeed = 1;
+							map.movePlayerUp();
+							setOccupied(true);
+							setStatus("running");
+						} else {
 							ySpeed = 0;
-							moving = "";
+							setOccupied(false);
+							setStatus("standing");
 							timer.cancel();
 							timer.purge();
-						} else {
-							if (map.getNextTile("Up").isPassable()){
-								ySpeed = 1;
-								map.movePlayerUp();
-							} else {
-								ySpeed = 0;
-								moving = "";
-								timer.cancel();
-								timer.purge();
-							}
 						}
 					}
 				}, 0, 320);
 			}
+			setFacing("Up");
 		}
-		facing = "Up";
+	}
+	
+	private void moveDown() {
+		if (!isOccupied()){
+			if (map.getNextTile("Down").isPassable()){
+				Timer timer = new Timer();
+				timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						if (!isOccupied()) {
+							ySpeed = -1;
+							map.movePlayerDown();
+							setOccupied(true);
+							setStatus("running");
+						} else {
+							ySpeed = 0;
+							setOccupied(false);
+							setStatus("standing");
+							timer.cancel();
+							timer.purge();
+						}
+					}
+				}, 0, 320);
+			}
+			setFacing("Down");
+		}
 	}
 
 	private void moveRight() {
-		if (map.getNextTile("Right").isPassable()){
-			if (moving.equals("")){
-				moving = "Right";
+		if (!isOccupied()){
+			if (map.getNextTile("Right").isPassable()){
 				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (keyStillPressed[1] == false) {
+						if (!isOccupied()) {
+							xSpeed = -1;
+							map.movePlayerRight();
+							setOccupied(true);
+							setStatus("running");
+						} else {
 							xSpeed = 0;
-							moving = "";
+							setOccupied(false);
+							setStatus("standing");
 							timer.cancel();
 							timer.purge();
-						} else {
-							if (map.getNextTile("Right").isPassable()){
-								xSpeed = -1;
-								map.movePlayerRight();
-							} else {
-								xSpeed = 0;
-								moving = "";
-								timer.cancel();
-								timer.purge();
-							}
 						}
 					}
 				}, 0, 320);
 			}
+			setFacing("Right");
 		}
-		facing = "Right";
 	}
 
 	private void moveLeft() {
-		if (map.getNextTile("Left").isPassable()){
-			if (moving.equals("")){
-				moving = "Left";
+		if (!isOccupied()){
+			if (map.getNextTile("Left").isPassable()){
 				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (keyStillPressed[0] == false) {
+						if (!isOccupied()) {
+							xSpeed = 1;
+							map.movePlayerLeft();
+							setOccupied(true);
+							setStatus("running");
+						} else {
 							xSpeed = 0;
-							moving = "";
+							setOccupied(false);
+							setStatus("standing");
 							timer.cancel();
 							timer.purge();
-						} else {
-							if (map.getNextTile("Left").isPassable()){
-								xSpeed = 1;
-								map.movePlayerLeft();
-							} else {
-								xSpeed = 0;
-								moving = "";
-								timer.cancel();
-								timer.purge();
-							}
 						}
 					}
 				}, 0, 320);
 			}
+			setFacing("Left");
 		}
-		facing = "Left";
 	}
 
 	public void paint(Graphics2D g) {
 		int offset = 0;
 		g.setColor(Color.BLACK);
-		if (moving.equals("")){
-			if (facing.equals("Left")){
+		if (!isOccupied()){
+			if (getFacing().equals("Left")){
 				g.drawImage(Sprite.getImage("player"),
 						320, 240, 352, 272,
 						32, 32, 63, 63,
 						this);
-			} else if (facing.equals("Right")){
+			} else if (getFacing().equals("Right")){
 				g.drawImage(Sprite.getImage("player"),
 						320, 240, 352, 272,
 						32, 64, 63, 95,
 						this);
-			} else if (facing.equals("Up")){
+			} else if (getFacing().equals("Up")){
 				g.drawImage(Sprite.getImage("player"),
 						320, 240, 352, 272,
 						32, 96, 63, 127,
 						this);
-			} else if (facing.equals("Down")){
+			} else if (getFacing().equals("Down")){
 				g.drawImage(Sprite.getImage("player"),
 						320, 240, 352, 272,
 						32, 0, 63, 31,
 						this);
 			}
-		} else if (moving.equals("Left")) {
+		} else if (getStatus().equals("running") && facing.equals("Left")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
 					320, 240, 352, 272,
@@ -224,7 +196,7 @@ public class Player extends JPanel{
 			if (animationProgress > 31) {
 				animationProgress = 0;
 			}
-		} else if (moving.equals("Right")) {
+		} else if (getStatus().equals("running") && facing.equals("Right")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
 					320, 240, 352, 272,
@@ -234,7 +206,7 @@ public class Player extends JPanel{
 			if (animationProgress > 31) {
 				animationProgress = 0;
 			}
-		} else if (moving.equals("Up")) {
+		} else if (getStatus().equals("running") && facing.equals("Up")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
 					320, 240, 352, 272,
@@ -244,7 +216,7 @@ public class Player extends JPanel{
 			if (animationProgress > 31) {
 				animationProgress = 0;
 			}
-		} else if (moving.equals("Down")) {
+		} else if (getStatus().equals("running") && facing.equals("Down")) {
 			offset = animationProgress / 11;
 			g.drawImage(Sprite.getImage("player"),
 					320, 240, 352, 272,
@@ -254,7 +226,53 @@ public class Player extends JPanel{
 			if (animationProgress > 31) {
 				animationProgress = 0;
 			}
+		} else if (getStatus().equals("menu")) {
+			if (getFacing().equals("Left")){
+				g.drawImage(Sprite.getImage("player"),
+						320, 240, 352, 272,
+						32, 32, 63, 63,
+						this);
+			} else if (getFacing().equals("Right")){
+				g.drawImage(Sprite.getImage("player"),
+						320, 240, 352, 272,
+						32, 64, 63, 95,
+						this);
+			} else if (getFacing().equals("Up")){
+				g.drawImage(Sprite.getImage("player"),
+						320, 240, 352, 272,
+						32, 96, 63, 127,
+						this);
+			} else if (getFacing().equals("Down")){
+				g.drawImage(Sprite.getImage("player"),
+						320, 240, 352, 272,
+						32, 0, 63, 31,
+						this);
+			}			
 		}
+	}
+
+	public String getFacing() {
+		return facing;
+	}
+
+	public void setFacing(String facing) {
+		this.facing = facing;
+	}
+
+	public boolean isOccupied() {
+		return occupied;
+	}
+
+	public void setOccupied(boolean occupied) {
+		this.occupied = occupied;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

@@ -15,7 +15,7 @@ import org.json.simple.parser.JSONParser;
 
 @SuppressWarnings({ "unused", "serial" })
 public class WorldMap extends JPanel{
-	
+
 	private int x = 0;
 	private int y = 0;
 	private Game game;
@@ -23,12 +23,12 @@ public class WorldMap extends JPanel{
 	private boolean mapLoaded = false;
 	private int[] playerPos = new int[2];
 
-	public WorldMap(Game game) {
+	public WorldMap(Game game, String string) {
 		this.game = game;
-		loadmap();
+		loadmap(string);
 		setPlayerSpawnPoint();
 	}
-	
+
 	private void setPlayerSpawnPoint() {
 		// Calculates the Player's position from the tile that has the attribute "spawn"
 		for (int y = 0; y<mapItems.size(); y++){
@@ -62,9 +62,8 @@ public class WorldMap extends JPanel{
 		}
 		return null;
 	}
-	
+
 	private Tile getCurrentTile() {
-		System.out.print("current position: ");
 		System.out.println(playerPos[0] + ", " + playerPos[1]);
 		return getTile(playerPos[0], playerPos[1]);
 	}
@@ -78,50 +77,50 @@ public class WorldMap extends JPanel{
 		return null;
 	}
 
-	private void loadmap() {
+	private void loadmap(String mapName) {
 		JSONParser parser = new JSONParser();
-		 
-        try {        	
-            Object obj = parser.parse(new FileReader(
-                    "maps/testmap.txt"));
- 
-            JSONObject jsonObject = (JSONObject) obj;
- 
-            String name = (String) jsonObject.get("Name");
-            String author = (String) jsonObject.get("Author");
-            JSONArray jsonMapItemRow = (JSONArray) jsonObject.get("Map Item Rows");
- 
-            System.out.println("loading map: " + name);
-            System.out.println("written by: " + author);
-            System.out.println("Map Items:");
-            @SuppressWarnings("unchecked")
+
+		try {        	
+			Object obj = parser.parse(new FileReader(
+					"maps/"+mapName+".txt"));
+
+			JSONObject jsonObject = (JSONObject) obj;
+
+			String name = (String) jsonObject.get("Name");
+			String author = (String) jsonObject.get("Author");
+			JSONArray jsonMapItemRow = (JSONArray) jsonObject.get("Map Item Rows");
+
+			System.out.println("loading map: " + name);
+			System.out.println("written by: " + author);
+			System.out.println("Map Items:");
+			@SuppressWarnings("unchecked")
 			Iterator<JSONObject> iterator = jsonMapItemRow.iterator();
-            JSONObject currentRow;            
-            while (iterator.hasNext()) {
-            	currentRow = iterator.next();
-            	JSONArray jsonMapItems = (JSONArray) currentRow.get("Row Items");
-    			@SuppressWarnings("unchecked")
+			JSONObject currentRow;            
+			while (iterator.hasNext()) {
+				currentRow = iterator.next();
+				JSONArray jsonMapItems = (JSONArray) currentRow.get("Row Items");
+				@SuppressWarnings("unchecked")
 				Iterator<String> stringIterator = jsonMapItems.iterator();
-    			ArrayList <Tile> itemsInRow = new ArrayList<Tile>();
-    			while (stringIterator.hasNext()){
-    				String currentItem = stringIterator.next();
-                    itemsInRow.add(new Tile(currentItem));
-                    System.out.print(currentItem);
-    			}
-    			this.mapItems.add(itemsInRow);
-    			System.out.print("\n");
-            }
-            this.mapLoaded = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+				ArrayList <Tile> itemsInRow = new ArrayList<Tile>();
+				while (stringIterator.hasNext()){
+					String currentItem = stringIterator.next();
+					itemsInRow.add(new Tile(currentItem));
+					System.out.print(currentItem);
+				}
+				this.mapItems.add(itemsInRow);
+				System.out.print("\n");
+			}
+			this.mapLoaded = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void move(int xSpeed, int ySpeed) {
 		x += xSpeed;
 		y += ySpeed;				
 	}
-	
+
 	public void paint(Graphics2D g) {
 		if (this.mapLoaded){
 			for (int i = 0; i < this.mapItems.size(); i++) {
@@ -152,13 +151,13 @@ public class WorldMap extends JPanel{
 		getNextTile("Up").setPlayerPos(true);
 		playerPos[1]-=1;
 	}
-	
+
 	public void movePlayerRight() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Right").setPlayerPos(true);
 		playerPos[0]+=1;
 	}
-	
+
 	public void movePlayerLeft() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Left").setPlayerPos(true);

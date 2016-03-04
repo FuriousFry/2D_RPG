@@ -4,6 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -13,8 +16,10 @@ public class Game extends JPanel {
 	/*
 	 * map has to be generated first, or else the player can't move.
 	 */
-	private WorldMap map = new WorldMap(this);
+	private WorldMap map = new WorldMap(this, "testmap");
 	private Player player = new Player(this);
+	private String gameState = "Run";
+	private Menu menu = new Menu(this, player);
 
 	public Game() {
 		addKeyListener(new KeyListener() {
@@ -30,13 +35,18 @@ public class Game extends JPanel {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				player.keyPressed(e);
+				menu.keyPressed(e);
 			}
 		});
 		setFocusable(true);
 	}
-	
+
 	private void move() {
-		player.move();
+		if (gameState.equals("Run")){
+			player.move();
+		} else if (gameState.equals("Dialogue")){
+			menu.move();
+		}
 	}
 
 	@Override
@@ -47,6 +57,7 @@ public class Game extends JPanel {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		map.paint(g2d);
 		player.paint(g2d);
+		menu.paint(g2d);
 
 		g2d.setColor(Color.GRAY);
 	}
@@ -59,11 +70,14 @@ public class Game extends JPanel {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		while (true) {
-			game.move();
-			game.repaint();
-			Thread.sleep(10);
-		}
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				game.move();
+				game.repaint();
+			}
+		}, 0, 10);
 	}
 
 	public WorldMap getMap() {

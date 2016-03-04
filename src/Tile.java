@@ -1,8 +1,7 @@
-import java.util.ArrayList;
-
 public class Tile {
 	private int id;
 	private String name;
+	@SuppressWarnings("unused")
 	private boolean playerPos = false;
 	private boolean spawnPoint = false;
 
@@ -20,11 +19,11 @@ public class Tile {
 	public int getID() {
 		return this.id;
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public boolean isPassable() {
 		switch (this.id) {
 		case 0:
@@ -36,7 +35,7 @@ public class Tile {
 		}
 		return false;
 	}
-	
+
 	public void setPlayerPos(boolean bool) {
 		playerPos = bool;
 	}
