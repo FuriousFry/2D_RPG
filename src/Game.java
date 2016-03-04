@@ -5,6 +5,8 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,11 +19,12 @@ public class Game extends JPanel {
 	/*
 	 * map has to be generated first, or else the player can't move.
 	 */
-	private WorldMap map = new WorldMap(this, "testmap");
+	private WorldMap map;
 	private Player player = new Player(this);
-	private String gameState = "Run";
 	private Menu menu = new Menu(this, player);
+	private MainMenu mainMenu = new MainMenu(this, player);
 	static JFrame frame = new JFrame("2D_RPG");
+	private boolean isMapLoaded = false;
 
 	public Game() {
 		addKeyListener(new KeyListener() {
@@ -38,17 +41,16 @@ public class Game extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				player.keyPressed(e);
 				menu.keyPressed(e);
+				mainMenu.keyPressed(e);
 			}
 		});
 		setFocusable(true);
 	}
 
 	private void move() {
-		if (gameState.equals("Run")){
 			player.move();
-		} else if (gameState.equals("Dialogue")){
 			menu.move();
-		}
+			mainMenu.move();
 	}
 
 	@Override
@@ -57,10 +59,13 @@ public class Game extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		map.paint(g2d);
-		player.paint(g2d);
-		menu.paint(g2d);
-
+		if (isMapLoaded) {
+			this.map.paint(g2d);
+			this.player.paint(g2d);
+			this.menu.paint(g2d);
+		}
+		this.mainMenu.paint(g2d);
+		
 		g2d.setColor(Color.GRAY);
 	}
 
@@ -87,5 +92,25 @@ public class Game extends JPanel {
 
 	public void close() {
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+	}
+
+	public void saveGame() throws IOException {
+		SaveGame.saveGame(this.player, this.map);	
+	}
+	
+	/* loads the values stored in the saveGame. 
+	0: Player's X Position
+	1: Player's Y Position
+	2: Map Name
+	*/
+	public void loadSave() {
+		ArrayList<String> saveValues = SaveGame.loadGame();
+		this.map = new WorldMap(this, saveValues.get(2));
+		this.map.setPlayerSpawnPoint(new int[]{Integer.valueOf(saveValues.get(0)), Integer.valueOf(saveValues.get(1))});
+		isMapLoaded = true;
+	}
+
+	public void switchMap(String[] destination) {
+		this.map = new WorldMap(this, WorldMap.calculateSpawn(destination), destination[0]);		
 	}
 }

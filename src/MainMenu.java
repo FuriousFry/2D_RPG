@@ -11,19 +11,19 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class Menu extends JPanel{
+public class MainMenu extends JPanel{
 	Game game;
-	Player player;
-	boolean active = false;
+	boolean active = true;
 	ArrayList<String> options = new ArrayList<String>(); 
 	int currentOption = 0;
-	String previousStatus = "";
+	private Player player;
 
-	public Menu(Game game, Player player) {
-		this.game = game;
+	public MainMenu(Game game, Player player) {
 		this.player = player;
+		this.game = game;
+		this.player.setOccupied(true);
 		try {
-			BufferedReader in = new BufferedReader(new FileReader("dialogue/menu.txt"));
+			BufferedReader in = new BufferedReader(new FileReader("dialogue/main_menu.txt"));
 			String line;
 			while((line = in.readLine()) != null)
 			{
@@ -57,14 +57,6 @@ public class Menu extends JPanel{
 	}
 
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			if (!this.player.isOccupied()){
-				currentOption = 0;
-				blockPlayer();
-			} else if (this.active) {
-				releasePlayer();
-			}
-		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN){
 			if (this.active){
 				moveSelectionDown();
@@ -82,35 +74,24 @@ public class Menu extends JPanel{
 		}
 	}
 
-	private void releasePlayer() {
-		System.out.println("closed menu");
-		this.player.setStatus(this.previousStatus);
-		this.active = false;
-		this.player.setOccupied(false);	
-	}
-
-	private void blockPlayer() {
-		System.out.println("opened menu");
-		this.previousStatus = this.player.getStatus();
-		this.active = true;
-		this.player.setOccupied(true);
-		this.player.setStatus("menu");		
-	}
-
 	private void selectOption() {
 		String selectedOption = options.get(currentOption);
 		if (selectedOption.equals("QUIT")){
 			game.close();
-		} else if (selectedOption.equals("RESUME")) {
-			releasePlayer();
-		} else if (selectedOption.equals("SAVE")){
+		} else if (selectedOption.equals("NEW")) {
 			try {
-				game.saveGame();
+				SaveGame.saveGame("default");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			releasePlayer();
+			game.loadSave();
+			this.active = false;
+			player.setOccupied(false);
+		} else if (selectedOption.equals("LOAD")){
+			game.loadSave();
+			this.active = false;
+			player.setOccupied(false);
 		}
 	}
 

@@ -22,29 +22,31 @@ public class WorldMap extends JPanel{
 	private ArrayList<ArrayList<Tile>> mapItems = new ArrayList<ArrayList<Tile>>();
 	private boolean mapLoaded = false;
 	private int[] playerPos = new int[2];
+	private String name ="";
 
 	public WorldMap(Game game, String string) {
 		this.game = game;
+		this.name = string;
 		loadmap(string);
-		setPlayerSpawnPoint();
 	}
 
-	private void setPlayerSpawnPoint() {
-		// Calculates the Player's position from the tile that has the attribute "spawn"
-		for (int y = 0; y<mapItems.size(); y++){
-			ArrayList<Tile> tileRow = mapItems.get(y);
-			for (int x = 0; x<tileRow.size(); x++){
-				if (tileRow.get(x).isSpawnPoint()) {
-					playerPos[0]=x;
-					playerPos[1]=y;
-					System.out.println(playerPos[0] + ", " + playerPos[1]);
-				}
-			}
-		}
+	public WorldMap(Game game, int[] calculateSpawn, String string) {
+		this.game = game;
+		this.name = string;
+		loadmap(string);
+		this.playerPos = calculateSpawn;
+		setPlayerSpawnPoint(this.playerPos);
+	}
+
+	public void setPlayerSpawnPoint(int[] playerPositionInput) {
+		// Calculates the Player's position from the tile that has the attribute "spawn"		
 		// Offsets the map so that the player spawns where the spawnpoint is
-		this.x -= playerPos[0]*32;
+		System.out.println("Map thinks Position is: " + playerPositionInput[0] + ", " + playerPositionInput[1]);
+		this.x -= playerPositionInput[0]*32;
+		this.playerPos[0] = playerPositionInput[0];
 		this.x += 304;
-		this.y -= playerPos[1]*32;
+		this.y -= playerPositionInput[1]*32;
+		this.playerPos[1] = playerPositionInput[1];
 		this.y += 230;
 	}
 
@@ -52,20 +54,20 @@ public class WorldMap extends JPanel{
 		//System.out.print("next in direction " + direction + ": ");
 		switch (direction){
 		case "Down":
-			return getTile(playerPos[0], playerPos[1]+1);
+			return getTile(getPlayerPos()[0], getPlayerPos()[1]+1);
 		case "Up":
-			return getTile(playerPos[0], playerPos[1]-1);
+			return getTile(getPlayerPos()[0], getPlayerPos()[1]-1);
 		case "Left":
-			return getTile(playerPos[0]-1, playerPos[1]);
+			return getTile(getPlayerPos()[0]-1, getPlayerPos()[1]);
 		case "Right":
-			return getTile(playerPos[0]+1, playerPos[1]);
+			return getTile(getPlayerPos()[0]+1, getPlayerPos()[1]);
 		}
 		return null;
 	}
 
 	private Tile getCurrentTile() {
-		System.out.println(playerPos[0] + ", " + playerPos[1]);
-		return getTile(playerPos[0], playerPos[1]);
+		System.out.println(getPlayerPos()[0] + ", " + getPlayerPos()[1]);
+		return getTile(getPlayerPos()[0], getPlayerPos()[1]);
 	}
 
 	private Tile getTile(int j, int i) {
@@ -92,7 +94,6 @@ public class WorldMap extends JPanel{
 
 			System.out.println("loading map: " + name);
 			System.out.println("written by: " + author);
-			System.out.println("Map Items:");
 			@SuppressWarnings("unchecked")
 			Iterator<JSONObject> iterator = jsonMapItemRow.iterator();
 			JSONObject currentRow;            
@@ -105,10 +106,8 @@ public class WorldMap extends JPanel{
 				while (stringIterator.hasNext()){
 					String currentItem = stringIterator.next();
 					itemsInRow.add(new Tile(currentItem));
-					System.out.print(currentItem);
 				}
 				this.mapItems.add(itemsInRow);
-				System.out.print("\n");
 			}
 			this.mapLoaded = true;
 		} catch (Exception e) {
@@ -127,12 +126,13 @@ public class WorldMap extends JPanel{
 				for (int j = 0; j < this.mapItems.get(i).size(); j++){
 					switch (mapItems.get(i).get(j).getID()){
 					case 0:
-						g.setColor(Color.GREEN);
 						g.drawImage(Sprite.getImage("grass"), (x+j*32), (y+i*32), this);
 						break;
 					case 1:
-						g.setColor(Color.GRAY);
 						g.drawImage(Sprite.getImage("rocks"), (x+j*32), (y+i*32), this);
+						break;
+					case 2:
+						g.drawImage(Sprite.getImage("door_on_rocks"), (x+j*32), (y+i*32), this);
 						break;
 					}
 				}
@@ -143,29 +143,73 @@ public class WorldMap extends JPanel{
 	public void movePlayerDown() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Down").setPlayerPos(true);
-		playerPos[1]+=1;
+		getPlayerPos()[1]+=1;
 		Sound.playSound("walk");
+		checkForEffect();
 	}
 
 	public void movePlayerUp() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Up").setPlayerPos(true);
-		playerPos[1]-=1;
+		getPlayerPos()[1]-=1;
 		Sound.playSound("walk");
+		checkForEffect();
 	}
 
 	public void movePlayerRight() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Right").setPlayerPos(true);
-		playerPos[0]+=1;
+		getPlayerPos()[0]+=1;
 		Sound.playSound("walk");
+		checkForEffect();
 	}
 
 	public void movePlayerLeft() {
 		getCurrentTile().setPlayerPos(false);
 		getNextTile("Left").setPlayerPos(true);
-		playerPos[0]-=1;
+		getPlayerPos()[0]-=1;
 		Sound.playSound("walk");
+		checkForEffect();
 	}
 
+	private void checkForEffect() {
+		if (getCurrentTile().getID()== 2) {
+			game.switchMap(getCurrentTile().getDestination());
+		}
+		
+	}
+
+	public int[] getPlayerPos() {
+		return this.playerPos;
+	}
+
+	public void setPlayerPosX(int playerPosX) {
+		this.playerPos[0] = playerPosX;
+	}
+	
+	public void setPlayerPosY(int playerPosY) {
+		this.playerPos[1] = playerPosY;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+
+	public static int[] calculateSpawn(String[] destination) {
+		switch (destination[1]){
+		case "testmap":
+			switch (destination[2]){
+			case "north":
+				return new int[]{7,2};
+			}
+			break;
+		case "testmap2":
+			switch (destination[2]){
+			case "south":
+				return new int[]{4,7};
+			}
+			break;
+		}
+		return new int[]{0,0};
+	}
 }

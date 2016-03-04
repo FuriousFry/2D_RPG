@@ -18,10 +18,10 @@ public class Player extends JPanel{
 	private boolean occupied = false;
 	private String facing = "Down";
 	private String status = "Standing";
+	private boolean[] isKeyPressed = new boolean[4];
 
 	public Player(Game game) {
 		this.game = game;
-		this.map = this.game.getMap();
 
 		System.out.println(map);
 	}
@@ -29,6 +29,8 @@ public class Player extends JPanel{
 	public void move() {
 		if (map != null){
 			this.map.move(xSpeed, ySpeed);
+		} else {
+			this.map = this.game.getMap();
 		}
 	}
 
@@ -36,23 +38,35 @@ public class Player extends JPanel{
 	}
 
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {}
-		if (e.getKeyCode() == KeyEvent.VK_UP) {}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			isKeyPressed[0]=false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			isKeyPressed[1]=false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			isKeyPressed[2]=false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			isKeyPressed[3]=false;
+		}
 	}
 
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			isKeyPressed[0]=true;
 			moveLeft();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			isKeyPressed[1]=true;
 			moveRight();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			isKeyPressed[2]=true;
 			moveUp();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			isKeyPressed[3]=true;
 			moveDown();
 		}
 	}	
@@ -64,7 +78,8 @@ public class Player extends JPanel{
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (!isOccupied()) {
+						if (!isOccupied() || isKeyPressed[2] && 
+								map.getNextTile("Up").isPassable()) {
 							ySpeed = 1;
 							map.movePlayerUp();
 							setOccupied(true);
@@ -90,7 +105,8 @@ public class Player extends JPanel{
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (!isOccupied()) {
+						if (!isOccupied() || isKeyPressed[3] && 
+								map.getNextTile("Down").isPassable()) {
 							ySpeed = -1;
 							map.movePlayerDown();
 							setOccupied(true);
@@ -116,7 +132,8 @@ public class Player extends JPanel{
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (!isOccupied()) {
+						if (!isOccupied() || isKeyPressed[1] && 
+								map.getNextTile("Right").isPassable()) {
 							xSpeed = -1;
 							map.movePlayerRight();
 							setOccupied(true);
@@ -142,7 +159,8 @@ public class Player extends JPanel{
 				timer.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						if (!isOccupied()) {
+						if ((!isOccupied() || isKeyPressed[0]) && 
+								map.getNextTile("Left").isPassable()) {
 							xSpeed = 1;
 							map.movePlayerLeft();
 							setOccupied(true);
@@ -187,43 +205,43 @@ public class Player extends JPanel{
 						this);
 			}
 		} else if (getStatus().equals("running") && facing.equals("Left")) {
-			offset = animationProgress / 11;
+			offset = Math.min(3,animationProgress / 11);
 			g.drawImage(Sprite.getImage("player"),
 					304, 224, 336, 256,
 					offset*32, 32, offset*32+31, 63,
 					this);
 			animationProgress++;
-			if (animationProgress > 31) {
+			if (animationProgress >= 32) {
 				animationProgress = 0;
 			}
 		} else if (getStatus().equals("running") && facing.equals("Right")) {
-			offset = animationProgress / 11;
+			offset = Math.min(3,animationProgress / 11);
 			g.drawImage(Sprite.getImage("player"),
 					304, 224, 336, 256,
 					offset*32, 64, offset*32+31, 95,
 					this);
 			animationProgress++;
-			if (animationProgress > 31) {
+			if (animationProgress >= 32) {
 				animationProgress = 0;
 			}
 		} else if (getStatus().equals("running") && facing.equals("Up")) {
-			offset = animationProgress / 11;
+			offset = Math.min(3,animationProgress / 11);
 			g.drawImage(Sprite.getImage("player"),
 					304, 224, 336, 256,
 					offset*32, 96, offset*32+31, 127,
 					this);
 			animationProgress++;
-			if (animationProgress > 31) {
+			if (animationProgress >= 32) {
 				animationProgress = 0;
 			}
 		} else if (getStatus().equals("running") && facing.equals("Down")) {
-			offset = animationProgress / 11;
+			offset = Math.min(3,animationProgress / 11);
 			g.drawImage(Sprite.getImage("player"),
 					304, 224, 336, 256,
 					offset*32, 0, offset*32+31, 31,
 					this);
 			animationProgress++;
-			if (animationProgress > 31) {
+			if (animationProgress >= 32) {
 				animationProgress = 0;
 			}
 		} else if (getStatus().equals("menu")) {

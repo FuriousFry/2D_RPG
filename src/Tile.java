@@ -3,16 +3,16 @@ public class Tile {
 	private String name;
 	@SuppressWarnings("unused")
 	private boolean playerPos = false;
-	private boolean spawnPoint = false;
+	private String transition = "";
+	private String transitionNote = "";
 
 	public Tile(String item) {
 		String[] parts = item.split(",");
 		this.id = Integer.valueOf(parts[0]);
 		this.name = parts[1];
 		if (parts.length > 2) {
-			if(parts[2].equals("spawn")){
-				this.setSpawnPoint(true);
-			}
+			this.transition = parts[2];
+			this.transitionNote = parts[3];
 		}
 	}
 
@@ -27,11 +27,14 @@ public class Tile {
 	public boolean isPassable() {
 		switch (this.id) {
 		case 0:
-			System.out.println("is passable");
+			System.out.println(this.name + "is passable");
 			return true;
 		case 1:
-			System.out.println("is not passable");
+			System.out.println(this.name + "is not passable");
 			return false;
+		case 2:
+			System.out.println(this.name + "is passable");
+			return true;
 		}
 		return false;
 	}
@@ -40,12 +43,8 @@ public class Tile {
 		playerPos = bool;
 	}
 
-	public boolean isSpawnPoint() {
-		return spawnPoint;
-	}
-
-	public void setSpawnPoint(boolean spawnPoint) {
-		this.spawnPoint = spawnPoint;
+	public String[] getDestination() {
+		return (new String[]{transition, transitionNote});
 	}
 
 }

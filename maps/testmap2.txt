@@ -1,5 +1,5 @@
 {
-    "Name": "testmap",
+    "Name": "testmap2",
     "Author": "Michael Paulus",
     "Map Item Rows": [
 	{"Row Items": [
@@ -10,7 +10,7 @@
 "1,rocks"
 "1,rocks"
 "1,rocks"
-"2,door_on_rocks,testmap2,south"
+"1,rocks"
 "1,rocks"
 "1,rocks"
 "1,rocks"
@@ -188,7 +188,7 @@
 "1,rocks"
 "1,rocks"
 "1,rocks"
-"1,rocks"
+"2,door_on_rocks,testmap,north"
 "1,rocks"
 "1,rocks"
 "1,rocks"
